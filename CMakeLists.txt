@@ -27,6 +27,8 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
+message("PYTHON: ${MASKFUSION_PYTHON_VE_PATH}")
+
 # boost
 find_package(Boost 1.58.0 REQUIRED)
 message("Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")

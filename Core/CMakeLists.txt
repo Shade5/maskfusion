@@ -17,7 +17,7 @@ find_package(OpenMP)
 find_package(PythonLibs)
 
 set(MASKFUSION_MASK_RCNN_DIR ${CMAKE_SOURCE_DIR}/deps/Mask_RCNN CACHE STRING "Location of MaskRCNN")
-set(MASKFUSION_PYTHON_VE_PATH "" CACHE STRING "Python virtual environment to use")
+set(MASKFUSION_PYTHON_VE_PATH "/home/a/workspace/venv" CACHE STRING "Python virtual environment to use")
 configure_file("Segmentation/MaskRCNN/MaskRCNN.py.in" "${CMAKE_CURRENT_BINARY_DIR}/../GUI/MaskRCNN.py")
 configure_file("Segmentation/MaskRCNN/helpers.py" "${CMAKE_CURRENT_BINARY_DIR}/../GUI/helpers.py")
 
@@ -48,6 +48,9 @@ set(DENSECRF_LIBRARY_DIRS "${DENSECRF_DIR}/build/src/")
 set(DENSECRF_INCLUDE_DIRS "${DENSECRF_DIR}/include")
 set(DENSECRF_LIBRARIES densecrf)
 set(maskfusion_SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Shaders" CACHE PATH "Where the shaders live")
+
+set(PYTHON_LIBRARIES /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6m.so)
+set(PYTHON_INCLUDE_DIRS /usr/include/python3.6m)
 
 message("Using: ")
 message("=======")

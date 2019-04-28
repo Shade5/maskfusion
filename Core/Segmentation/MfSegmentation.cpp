@@ -216,7 +216,7 @@ SegmentationResult MfSegmentation::performSegmentation(std::list<std::shared_ptr
     // Build use ignore map
     if(nMasks){
         for(size_t i=0; i<total; i++){
-            if(frame->classIDs[frame->mask.data[i]] == personClassID){
+            if(frame->mask.data[i] > 0){
                 semanticIgnoreMap.data[i] = 255;
                 cv8UC1Buffer.data[i] = 0;
             } else {

@@ -29,6 +29,9 @@
 #include <boost/algorithm/string.hpp>
 #include <GUI/Tools/PangolinReader.h>
 #include <opencv2/core/ocl.hpp>
+#include <string>
+#include <limits.h>
+#include <unistd.h>
 
 /*
  * Parameters:
@@ -136,6 +139,7 @@ MainController::MainController(int argc, char* argv[])
     bool logReaderReady = false;
 
     Parse::get().arg(argc, argv, "-l", logFile);
+    logFile = "/home/a/Downloads/seq1.klg";
     if (logFile.length()) {
         if (boost::filesystem::exists(logFile) && boost::algorithm::ends_with(logFile, ".klg")) {
             logReader = std::make_unique<KlgLogReader>(logFile, Parse::get().arg(argc, argv, "-f", tmpString) > -1);
