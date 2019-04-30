@@ -124,7 +124,8 @@ MainController::MainController(int argc, char* argv[])
         Intrinsics::setIntrinics(535.4, 539.2, 320.1, 247.6);
     } else {
         Resolution::setResolution(640, 480);
-        Intrinsics::setIntrinics(528, 528, 320, 240);
+        Intrinsics::setIntrinics(612, 612, 322, 244);
+//        Intrinsics::setIntrinics(528, 528, 320, 240);
     }
 
     if (calibrationFile.length()) loadCalibration(calibrationFile);
@@ -139,7 +140,7 @@ MainController::MainController(int argc, char* argv[])
     bool logReaderReady = false;
 
     Parse::get().arg(argc, argv, "-l", logFile);
-    logFile = "/home/a/Downloads/seq1.klg";
+    logFile = "/home/a/Downloads/seq_smith_alligned1.klg";
     if (logFile.length()) {
         if (boost::filesystem::exists(logFile) && boost::algorithm::ends_with(logFile, ".klg")) {
             logReader = std::make_unique<KlgLogReader>(logFile, Parse::get().arg(argc, argv, "-f", tmpString) > -1);
@@ -418,6 +419,7 @@ void MainController::launch() {
 }
 
 void MainController::run() {
+    static int index = 0;
     while (!pangolin::ShouldQuit() && !((!logReader->hasMore()) && quit) && !(maskFusion->getTick() == end && quit)) {
         if (!gui->pause->Get() || pangolin::Pushed(*gui->step)) {
             if ((logReader->hasMore() || rewind) && maskFusion->getTick() < end) {
@@ -458,7 +460,7 @@ void MainController::run() {
                     *currentPose = groundTruthOdometry->getIncrementalTransformation(logReader->getFrameData()->timestamp);
                 }
 
-                if (maskFusion->processFrame(logReader->getFrameData(), currentPose, weightMultiplier) && !showcaseMode) {
+                if (maskFusion->processFrame(logReader->getFrameData(), currentPose, weightMultiplier, index) && !showcaseMode) {
                     gui->pause->Ref().Set(true);
                 }
 
@@ -588,14 +590,10 @@ void MainController::run() {
         if (pangolin::Pushed(*gui->saveCloud)) maskFusion->savePly();
         // if(pangolin::Pushed(*gui->saveDepth)) eFusion->saveDepth();
         if (pangolin::Pushed(*gui->savePoses)) maskFusion->exportPoses();
-        if (pangolin::Pushed(*gui->saveView)) {
-            static int index = 0;
-            std::string viewPath;
-            do {
-                viewPath = exportDir + "/view" + std::to_string(index++);
-            } while (boost::filesystem::exists(viewPath + ".png"));
-            gui->saveColorImage(viewPath);
-        }
+
+        std::string viewPath;
+        viewPath = exportDir + "/view/view" + std::to_string(index++);
+        gui->saveColorImage(viewPath);
 
         TOCK("GUI");
     }
@@ -619,7 +617,7 @@ void MainController::drawScene(DRAW_COLOR_TYPE backgroundColor, DRAW_COLOR_TYPE 
 
         Eigen::Vector3f eye(currPose(0, 3), currPose(1, 3), currPose(2, 3));
 
-        const float shift = 0.2;
+        const float shift = 0.15;
         eye -= shift*forward;
 
         Eigen::Vector3f at = eye + forward;

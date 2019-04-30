@@ -197,11 +197,13 @@ void MaskFusion::computeFeedbackBuffers() {
     TOCK("feedbackBuffers");
 }
 
-bool MaskFusion::processFrame(FrameDataPointer frame, const Eigen::Matrix4f* inPose, const float weightMultiplier, const bool bootstrap) {
+bool MaskFusion::processFrame(FrameDataPointer frame, const Eigen::Matrix4f* inPose, const float weightMultiplier, int index, const bool bootstrap) {
     assert(frame->depth.type() == CV_32FC1);
     assert(frame->rgb.type() == CV_8UC3);
     assert(frame->timestamp >= 0);
     TICK("Run");
+
+    cv::imwrite(exportDir + "rgb/rgb" + std::to_string(index) + ".png", frame->rgb);
 
     frameQueue.push(frame);
     if(frameQueue.size() < queueLength) return 0;
@@ -297,9 +299,7 @@ bool MaskFusion::processFrame(FrameDataPointer frame, const Eigen::Matrix4f* inP
                 textureMask->texture->Upload(segmentationResult.fullSegmentation.data, GL_LUMINANCE_INTEGER_EXT, GL_UNSIGNED_BYTE);
 
                 if (exportSegmentation) {
-                    cv::Mat output;
-                    cv::threshold(segmentationResult.fullSegmentation, output, 254, 255, cv::THRESH_TOZERO_INV);
-                    cv::imwrite(exportDir + "Segmentation" + std::to_string(tick) + ".png", output);
+                    cv::imwrite(exportDir + "mask/mask" + std::to_string(tick) + ".png", segmentationResult.fullSegmentation);
                 }
 
 #ifdef EXPORT_OBJECT_MASKS

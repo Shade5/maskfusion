@@ -67,7 +67,7 @@ class MaskFusion {
        * @return returns true if a pause might be interesting, can be ignored without hesitation
        */
   bool processFrame(FrameDataPointer frame, const Eigen::Matrix4f* inPose = 0, const float weightMultiplier = 1.f,
-                    const bool bootstrap = false);
+                    int index=0, const bool bootstrap = false);
 
   /**
        * Predicts the current view of the scene, updates the [vertex/normal/image]Tex() members
